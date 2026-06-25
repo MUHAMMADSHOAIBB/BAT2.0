@@ -90,7 +90,7 @@ python run_all_fc_celltype_enrichment.py --pattern "/path/to/your/data/**/*_bina
 
 The full reference and result dataset backing the manuscript — all parcellation resolutions (100–1,000 parcels) for all 11 conditions, plus the reference atlases, cell-type maps, and example data also included here in miniature — is permanently archived on Zenodo:
 
-**[DOI to be added upon upload]**
+**https://doi.org/10.5281/zenodo.20839415**
 
 The small subset of this data shipped directly in this repository (one parcellation resolution, all conditions) is sufficient to run and verify every feature of the toolbox; the Zenodo archive is needed only to reproduce every individual result reported in the paper.
 
@@ -100,4 +100,4 @@ This project is distributed under the MIT License.
 
 ## Citation
 
-If you use BAT 2.0 in your research, please cite our manuscript (citation details to be added upon publication) and, if applicable, the Zenodo data archive above.
+If you use BAT 2.0 in your research, please cite our manuscript (citation details to be added upon publication) and the Zenodo data archive: https://doi.org/10.5281/zenodo.20839415
