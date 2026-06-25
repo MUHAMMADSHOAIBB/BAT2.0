@@ -1,0 +1,299 @@
+Cluster_ID,Anatomical_Region,Cell_Type,Mean_Expression,P_Value,Significant (p<0.05)
+2.0,Insular Cortex,Endothelial,0.2075969368376616,0.0,True
+3.0,Superior Frontal Gyrus,Endothelial,0.0462642482200455,0.0,True
+4.0,Middle Frontal Gyrus,Endothelial,0.047144443117224,0.0,True
+5.0,"Inferior Frontal Gyrus, pars triangularis",Endothelial,0.0571112093026648,0.0,True
+6.0,"Inferior Frontal Gyrus, pars opercularis",Endothelial,0.1119241853814313,0.0,True
+7.0,Precentral Gyrus,Endothelial,0.1017702251860617,0.0,True
+9.0,"Superior Temporal Gyrus, anterior division",Endothelial,0.0478650333342705,0.0,True
+17.0,Postcentral Gyrus,Endothelial,0.0209053497925922,0.0,True
+24.0,Intracalcarine Cortex,Endothelial,0.2596305794741764,0.0,True
+26.0,Juxtapositional Lobule Cortex (formerly Supplementary Motor Cortex),Endothelial,0.1198199751917389,0.0,True
+28.0,Paracingulate Gyrus,Endothelial,0.0566197957556775,0.0,True
+29.0,"Cingulate Gyrus, anterior division",Endothelial,0.1302287397014138,0.0,True
+30.0,"Cingulate Gyrus, posterior division",Endothelial,0.1394221603069971,0.0,True
+32.0,Cuneal Cortex,Endothelial,0.0491258532016439,0.0,True
+36.0,Lingual Gyrus,Endothelial,0.0870583272183278,0.0,True
+40.0,Occipital Fusiform Gyrus,Endothelial,0.0301731226503597,0.0,True
+41.0,Frontal Opercular Cortex,Endothelial,0.2028434854980169,0.0,True
+42.0,Central Opercular Cortex,Endothelial,0.0916450866667617,0.0,True
+43.0,Parietal Opercular Cortex,Endothelial,0.0432061843992095,0.0,True
+44.0,Planum Polare,Endothelial,0.1265700130598177,0.0,True
+45.0,Heschl's Gyrus (includes H1 and H2),Endothelial,0.1414769350801025,0.0,True
+46.0,Planum Temporale,Endothelial,0.1131155185563487,0.0,True
+47.0,Supracalcarine Cortex,Endothelial,0.1459322166963175,0.0,True
+48.0,Occipital Pole,Endothelial,0.0622889221560631,0.0,True
+3.0,Superior Frontal Gyrus,Gad,0.003844349085778,0.0,True
+10.0,"Superior Temporal Gyrus, posterior division",Gad,0.0249511791967348,0.0,True
+13.0,"Middle Temporal Gyrus, temporooccipital part",Gad,0.003444237499831,0.0,True
+17.0,Postcentral Gyrus,Gad,0.0078527731695832,0.0,True
+18.0,Superior Parietal Lobule,Gad,0.0267090147729295,0.0,True
+19.0,"Supramarginal Gyrus, anterior division",Gad,0.0333855249687764,0.0,True
+20.0,"Supramarginal Gyrus, posterior division",Gad,0.0279675461248709,0.0,True
+21.0,Angular Gyrus,Gad,0.0050839514853253,0.0,True
+22.0,"Lateral Occipital Cortex, superior division",Gad,0.0323333366678581,0.0,True
+23.0,"Lateral Occipital Cortex, inferior division",Gad,0.0187796426360142,0.0,True
+26.0,Juxtapositional Lobule Cortex (formerly Supplementary Motor Cortex),Gad,0.0301848519840387,0.0,True
+28.0,Paracingulate Gyrus,Gad,0.0618588178319864,0.0,True
+29.0,"Cingulate Gyrus, anterior division",Gad,0.107806704690539,0.0,True
+40.0,Occipital Fusiform Gyrus,Gad,0.0237546114731788,0.0,True
+43.0,Parietal Opercular Cortex,Gad,0.0115720627099584,0.0,True
+44.0,Planum Polare,Gad,0.0700627985677067,0.0,True
+45.0,Heschl's Gyrus (includes H1 and H2),Gad,0.1137622613348045,0.0,True
+46.0,Planum Temporale,Gad,0.1155339373065429,0.0,True
+48.0,Occipital Pole,Gad,0.0277228718331574,0.0,True
+2.0,Insular Cortex,L2,0.0260374298599917,0.0,True
+10.0,"Superior Temporal Gyrus, posterior division",L2,0.0228528321190585,0.0,True
+13.0,"Middle Temporal Gyrus, temporooccipital part",L2,0.0106804728018818,0.0,True
+16.0,"Inferior Temporal Gyrus, temporooccipital part",L2,0.0249482442720122,0.0,True
+18.0,Superior Parietal Lobule,L2,0.0341749797055958,0.0,True
+19.0,"Supramarginal Gyrus, anterior division",L2,0.0150349309861135,0.0,True
+20.0,"Supramarginal Gyrus, posterior division",L2,0.0375339119923617,0.0,True
+21.0,Angular Gyrus,L2,0.0159979645293736,0.0,True
+22.0,"Lateral Occipital Cortex, superior division",L2,0.0567606262854419,0.0,True
+23.0,"Lateral Occipital Cortex, inferior division",L2,0.0774181697892639,0.0,True
+24.0,Intracalcarine Cortex,L2,0.3123482697833658,0.0,True
+30.0,"Cingulate Gyrus, posterior division",L2,0.0060415857085569,0.0,True
+32.0,Cuneal Cortex,L2,0.1038386190266931,0.0,True
+34.0,"Parahippocampal Gyrus, anterior division",L2,0.0182372780141688,0.0,True
+35.0,"Parahippocampal Gyrus, posterior division",L2,0.0752071510189442,0.0,True
+36.0,Lingual Gyrus,L2,0.1815691741144838,0.0,True
+37.0,"Temporal Fusiform Cortex, anterior division",L2,0.0048273818161428,0.0,True
+38.0,"Temporal Fusiform Cortex, posterior division",L2,0.036888630308165,0.0,True
+39.0,Temporal Occipital Fusiform Cortex,L2,0.1146674309351454,0.0,True
+40.0,Occipital Fusiform Gyrus,L2,0.1307095545376123,0.0,True
+43.0,Parietal Opercular Cortex,L2,0.0131917783718981,0.0,True
+44.0,Planum Polare,L2,0.0849045985860054,0.0,True
+45.0,Heschl's Gyrus (includes H1 and H2),L2,0.1409883660047447,0.0,True
+46.0,Planum Temporale,L2,0.1246686601391419,0.0,True
+47.0,Supracalcarine Cortex,L2,0.1910967082676843,0.0,True
+48.0,Occipital Pole,L2,0.128179437835653,0.0,True
+10.0,"Superior Temporal Gyrus, posterior division",L4,0.0767860410770222,0.0,True
+12.0,"Middle Temporal Gyrus, posterior division",L4,0.0213144709458623,0.0,True
+13.0,"Middle Temporal Gyrus, temporooccipital part",L4,0.0381728851541091,0.0,True
+16.0,"Inferior Temporal Gyrus, temporooccipital part",L4,0.0543854756452253,0.0,True
+18.0,Superior Parietal Lobule,L4,0.0713025307383837,0.0,True
+19.0,"Supramarginal Gyrus, anterior division",L4,0.0197779111479218,0.0,True
+20.0,"Supramarginal Gyrus, posterior division",L4,0.0643320471862969,0.0,True
+21.0,Angular Gyrus,L4,0.0465708059753662,0.0,True
+22.0,"Lateral Occipital Cortex, superior division",L4,0.1112696838927997,0.0,True
+23.0,"Lateral Occipital Cortex, inferior division",L4,0.120257494544186,0.0,True
+24.0,Intracalcarine Cortex,L4,0.4549883798523722,0.0,True
+30.0,"Cingulate Gyrus, posterior division",L4,0.0931226939375355,0.0,True
+31.0,Precuneous Cortex,L4,0.084878892759044,0.0,True
+32.0,Cuneal Cortex,L4,0.1791499211354275,0.0,True
+35.0,"Parahippocampal Gyrus, posterior division",L4,0.0228573326408882,0.0,True
+36.0,Lingual Gyrus,L4,0.2429847255748511,0.0,True
+39.0,Temporal Occipital Fusiform Cortex,L4,0.1638307805526707,0.0,True
+40.0,Occipital Fusiform Gyrus,L4,0.1823303799500202,0.0,True
+43.0,Parietal Opercular Cortex,L4,0.0397674459449549,0.0,True
+44.0,Planum Polare,L4,0.0019693634953219,0.0,True
+45.0,Heschl's Gyrus (includes H1 and H2),L4,0.264610787156484,0.0,True
+46.0,Planum Temporale,L4,0.2422201991699479,0.0,True
+47.0,Supracalcarine Cortex,L4,0.3118454391327689,0.0,True
+48.0,Occipital Pole,L4,0.1741221243848366,0.0,True
+1.0,Frontal Pole,L5,0.0585545416239061,0.0,True
+2.0,Insular Cortex,L5,0.1160813588443234,0.0,True
+3.0,Superior Frontal Gyrus,L5,0.0759008732323544,0.0,True
+5.0,"Inferior Frontal Gyrus, pars triangularis",L5,0.0162013997882662,0.003,True
+7.0,Precentral Gyrus,L5,0.0006786630837411,0.0,True
+17.0,Postcentral Gyrus,L5,0.0351769856936973,0.0,True
+18.0,Superior Parietal Lobule,L5,0.0435192353465471,0.0,True
+25.0,Frontal Medial Cortex,L5,0.233893232379665,0.0,True
+26.0,Juxtapositional Lobule Cortex (formerly Supplementary Motor Cortex),L5,0.2099596178487553,0.0,True
+27.0,Subcallosal Cortex,L5,0.2145841918018882,0.0,True
+28.0,Paracingulate Gyrus,L5,0.2267116215543586,0.0,True
+29.0,"Cingulate Gyrus, anterior division",L5,0.3000401773297114,0.0,True
+30.0,"Cingulate Gyrus, posterior division",L5,0.1518939955132141,0.0,True
+31.0,Precuneous Cortex,L5,0.0556888724490446,0.0,True
+33.0,Frontal Orbital Cortex,L5,0.090934390225333,0.0,True
+41.0,Frontal Opercular Cortex,L5,0.1212144688252543,0.0,True
+44.0,Planum Polare,L5,0.0454546485543298,0.0,True
+2.0,Insular Cortex,L6,0.0787405254457296,0.0,True
+8.0,Temporal Pole,L6,0.0085812092963351,0.0,True
+9.0,"Superior Temporal Gyrus, anterior division",L6,0.2160226748269888,0.0,True
+10.0,"Superior Temporal Gyrus, posterior division",L6,0.0982161059140101,0.0,True
+12.0,"Middle Temporal Gyrus, posterior division",L6,0.0149702132681684,0.0,True
+13.0,"Middle Temporal Gyrus, temporooccipital part",L6,0.0116496889229975,0.0,True
+18.0,Superior Parietal Lobule,L6,0.0158553471812081,0.0,True
+20.0,"Supramarginal Gyrus, posterior division",L6,0.0344851944356237,0.0,True
+21.0,Angular Gyrus,L6,0.0356090416252919,0.0,True
+22.0,"Lateral Occipital Cortex, superior division",L6,0.0343470804873641,0.0,True
+23.0,"Lateral Occipital Cortex, inferior division",L6,0.0373613348418234,0.0,True
+24.0,Intracalcarine Cortex,L6,0.4059571870956918,0.0,True
+30.0,"Cingulate Gyrus, posterior division",L6,0.0583294147255838,0.0,True
+31.0,Precuneous Cortex,L6,0.0338789371172132,0.0,True
+32.0,Cuneal Cortex,L6,0.1376854107258801,0.0,True
+35.0,"Parahippocampal Gyrus, posterior division",L6,0.0739283575206402,0.0,True
+36.0,Lingual Gyrus,L6,0.2167966656930639,0.0,True
+38.0,"Temporal Fusiform Cortex, posterior division",L6,0.0174042796307598,0.0,True
+39.0,Temporal Occipital Fusiform Cortex,L6,0.0664921796313137,0.0,True
+40.0,Occipital Fusiform Gyrus,L6,0.0678079425190092,0.0,True
+42.0,Central Opercular Cortex,L6,0.0176334255592589,0.0,True
+43.0,Parietal Opercular Cortex,L6,0.1249634234575099,0.0,True
+44.0,Planum Polare,L6,0.2706054082925876,0.0,True
+45.0,Heschl's Gyrus (includes H1 and H2),L6,0.3800484831051105,0.0,True
+46.0,Planum Temporale,L6,0.3419815136939484,0.0,True
+47.0,Supracalcarine Cortex,L6,0.2971128364059618,0.0,True
+48.0,Occipital Pole,L6,0.0900786486233308,0.0,True
+1.0,Frontal Pole,Microglia,0.0498550285614511,0.0,True
+2.0,Insular Cortex,Microglia,0.1339499036777239,0.0,True
+3.0,Superior Frontal Gyrus,Microglia,0.0509278918158697,0.0,True
+4.0,Middle Frontal Gyrus,Microglia,0.0066510372311353,0.0,True
+5.0,"Inferior Frontal Gyrus, pars triangularis",Microglia,0.0213736192122165,0.0,True
+6.0,"Inferior Frontal Gyrus, pars opercularis",Microglia,0.0406621088661084,0.0,True
+8.0,Temporal Pole,Microglia,0.2760425802781215,0.0,True
+9.0,"Superior Temporal Gyrus, anterior division",Microglia,0.2513822804863672,0.0,True
+11.0,"Middle Temporal Gyrus, anterior division",Microglia,0.1743138398857864,0.0,True
+12.0,"Middle Temporal Gyrus, posterior division",Microglia,0.0731259683417176,0.0,True
+14.0,"Inferior Temporal Gyrus, anterior division",Microglia,0.2468723656675643,0.0,True
+15.0,"Inferior Temporal Gyrus, posterior division",Microglia,0.1758423006199614,0.0,True
+16.0,"Inferior Temporal Gyrus, temporooccipital part",Microglia,0.0054938365966358,0.0,True
+19.0,"Supramarginal Gyrus, anterior division",Microglia,0.0407843308380147,0.0,True
+25.0,Frontal Medial Cortex,Microglia,0.2164031134758702,0.0,True
+27.0,Subcallosal Cortex,Microglia,0.2117156463153184,0.0,True
+28.0,Paracingulate Gyrus,Microglia,0.1238899598272524,0.0,True
+29.0,"Cingulate Gyrus, anterior division",Microglia,0.1003785996645367,0.0,True
+33.0,Frontal Orbital Cortex,Microglia,0.0495838701082026,0.0,True
+34.0,"Parahippocampal Gyrus, anterior division",Microglia,0.3368606463182024,0.0,True
+37.0,"Temporal Fusiform Cortex, anterior division",Microglia,0.3100912787203732,0.0,True
+38.0,"Temporal Fusiform Cortex, posterior division",Microglia,0.0540768018971118,0.0,True
+41.0,Frontal Opercular Cortex,Microglia,0.1653857345512139,0.0,True
+42.0,Central Opercular Cortex,Microglia,0.0710430266753881,0.0,True
+43.0,Parietal Opercular Cortex,Microglia,0.0347173879064009,0.0,True
+44.0,Planum Polare,Microglia,0.107198819075764,0.0,True
+5.0,"Inferior Frontal Gyrus, pars triangularis",Oligo,0.0268248196369852,0.0,True
+6.0,"Inferior Frontal Gyrus, pars opercularis",Oligo,0.0796214212246153,0.0,True
+7.0,Precentral Gyrus,Oligo,0.1293695582848933,0.0,True
+9.0,"Superior Temporal Gyrus, anterior division",Oligo,0.0943490824868871,0.0,True
+10.0,"Superior Temporal Gyrus, posterior division",Oligo,0.0860158865237977,0.0,True
+12.0,"Middle Temporal Gyrus, posterior division",Oligo,0.014327594580138,0.0,True
+17.0,Postcentral Gyrus,Oligo,0.0947166399049316,0.0,True
+22.0,"Lateral Occipital Cortex, superior division",Oligo,0.003145073615546,0.0,True
+23.0,"Lateral Occipital Cortex, inferior division",Oligo,0.0030212454598628,0.0,True
+26.0,Juxtapositional Lobule Cortex (formerly Supplementary Motor Cortex),Oligo,0.0177039175389141,0.0,True
+32.0,Cuneal Cortex,Oligo,0.0460364899309808,0.0,True
+36.0,Lingual Gyrus,Oligo,0.0302768682735204,0.0,True
+39.0,Temporal Occipital Fusiform Cortex,Oligo,0.025985357422537,0.0,True
+40.0,Occipital Fusiform Gyrus,Oligo,0.0647247463947549,0.0,True
+43.0,Parietal Opercular Cortex,Oligo,0.0058745134064208,0.0,True
+44.0,Planum Polare,Oligo,0.0251399558052002,0.0,True
+45.0,Heschl's Gyrus (includes H1 and H2),Oligo,0.1232307383613248,0.0,True
+46.0,Planum Temporale,Oligo,0.1186851599884139,0.0,True
+47.0,Supracalcarine Cortex,Oligo,0.0501293889542588,0.0,True
+1.0,Frontal Pole,Opc,0.007162485954686,0.0,True
+2.0,Insular Cortex,Opc,0.0551042945853078,0.0,True
+3.0,Superior Frontal Gyrus,Opc,0.0115925370647089,0.0,True
+5.0,"Inferior Frontal Gyrus, pars triangularis",Opc,0.0206290008844412,0.0,True
+6.0,"Inferior Frontal Gyrus, pars opercularis",Opc,0.0377269851251065,0.0,True
+8.0,Temporal Pole,Opc,0.1532864498720019,0.0,True
+9.0,"Superior Temporal Gyrus, anterior division",Opc,0.1234825637102919,0.0,True
+11.0,"Middle Temporal Gyrus, anterior division",Opc,0.0717127638870924,0.0,True
+12.0,"Middle Temporal Gyrus, posterior division",Opc,0.0271100702638762,0.0,True
+14.0,"Inferior Temporal Gyrus, anterior division",Opc,0.1263151147542237,0.0,True
+15.0,"Inferior Temporal Gyrus, posterior division",Opc,0.0614879336967253,0.0,True
+19.0,"Supramarginal Gyrus, anterior division",Opc,0.02865834447651,0.0,True
+20.0,"Supramarginal Gyrus, posterior division",Opc,0.0129757816737935,0.0,True
+25.0,Frontal Medial Cortex,Opc,0.0985723322620389,0.0,True
+26.0,Juxtapositional Lobule Cortex (formerly Supplementary Motor Cortex),Opc,0.0358408465278008,0.0,True
+27.0,Subcallosal Cortex,Opc,0.0881122254280552,0.0,True
+28.0,Paracingulate Gyrus,Opc,0.1121459243519868,0.0,True
+29.0,"Cingulate Gyrus, anterior division",Opc,0.1503171165466597,0.0,True
+30.0,"Cingulate Gyrus, posterior division",Opc,0.0303252328128839,0.0,True
+33.0,Frontal Orbital Cortex,Opc,0.0455203506706174,0.0,True
+34.0,"Parahippocampal Gyrus, anterior division",Opc,0.1921813674475622,0.0,True
+37.0,"Temporal Fusiform Cortex, anterior division",Opc,0.1753829406653189,0.0,True
+38.0,"Temporal Fusiform Cortex, posterior division",Opc,0.0314517545162702,0.0,True
+41.0,Frontal Opercular Cortex,Opc,0.0925787673400611,0.0,True
+7.0,Precentral Gyrus,Pericyte,0.0298085675589661,0.0,True
+17.0,Postcentral Gyrus,Pericyte,0.0477230555351751,0.0,True
+18.0,Superior Parietal Lobule,Pericyte,0.0183554573041786,0.0,True
+19.0,"Supramarginal Gyrus, anterior division",Pericyte,0.0301548595514046,0.0,True
+20.0,"Supramarginal Gyrus, posterior division",Pericyte,0.0351684693894068,0.0,True
+21.0,Angular Gyrus,Pericyte,0.0316587272500886,0.0,True
+24.0,Intracalcarine Cortex,Pericyte,0.2316779600086968,0.0,True
+26.0,Juxtapositional Lobule Cortex (formerly Supplementary Motor Cortex),Pericyte,0.1187190963506095,0.0,True
+28.0,Paracingulate Gyrus,Pericyte,0.0588978140328651,0.0,True
+29.0,"Cingulate Gyrus, anterior division",Pericyte,0.1372155627450539,0.0,True
+30.0,"Cingulate Gyrus, posterior division",Pericyte,0.3225647779818796,0.0,True
+31.0,Precuneous Cortex,Pericyte,0.0702333952902706,0.0,True
+36.0,Lingual Gyrus,Pericyte,0.1129704469613837,0.0,True
+41.0,Frontal Opercular Cortex,Pericyte,0.0551255043610251,0.0,True
+47.0,Supracalcarine Cortex,Pericyte,0.1340843627901762,0.0,True
+3.0,Superior Frontal Gyrus,Pvalb,0.0185353997737469,0.0,True
+4.0,Middle Frontal Gyrus,Pvalb,0.0847119356087217,0.0,True
+5.0,"Inferior Frontal Gyrus, pars triangularis",Pvalb,0.0858956366087837,0.0,True
+6.0,"Inferior Frontal Gyrus, pars opercularis",Pvalb,0.0747466647885627,0.0,True
+7.0,Precentral Gyrus,Pvalb,0.2259857439881273,0.0,True
+10.0,"Superior Temporal Gyrus, posterior division",Pvalb,0.021266519844535,0.0,True
+17.0,Postcentral Gyrus,Pvalb,0.218415591984478,0.0,True
+18.0,Superior Parietal Lobule,Pvalb,0.0816362210811418,0.0,True
+19.0,"Supramarginal Gyrus, anterior division",Pvalb,0.0578705240429653,0.0,True
+20.0,"Supramarginal Gyrus, posterior division",Pvalb,0.0544003893192221,0.0,True
+21.0,Angular Gyrus,Pvalb,0.0336130447512392,0.0,True
+22.0,"Lateral Occipital Cortex, superior division",Pvalb,0.0865978017735588,0.0,True
+23.0,"Lateral Occipital Cortex, inferior division",Pvalb,0.0803404891316409,0.0,True
+24.0,Intracalcarine Cortex,Pvalb,0.300890682449048,0.0,True
+26.0,Juxtapositional Lobule Cortex (formerly Supplementary Motor Cortex),Pvalb,0.0324601669007237,0.0,True
+31.0,Precuneous Cortex,Pvalb,0.0208674656327509,0.0,True
+32.0,Cuneal Cortex,Pvalb,0.1557950378319342,0.0,True
+36.0,Lingual Gyrus,Pvalb,0.1398562458015323,0.0,True
+39.0,Temporal Occipital Fusiform Cortex,Pvalb,0.0410216138226364,0.0,True
+40.0,Occipital Fusiform Gyrus,Pvalb,0.1127182613911303,0.0,True
+43.0,Parietal Opercular Cortex,Pvalb,0.0813314808858964,0.0,True
+45.0,Heschl's Gyrus (includes H1 and H2),Pvalb,0.2476736710877001,0.0,True
+46.0,Planum Temporale,Pvalb,0.2311276945152749,0.0,True
+47.0,Supracalcarine Cortex,Pvalb,0.2139505661122486,0.0,True
+48.0,Occipital Pole,Pvalb,0.1308074084149758,0.0,True
+1.0,Frontal Pole,Sst,0.0957503110773316,0.0,True
+2.0,Insular Cortex,Sst,0.4572285487210081,0.0,True
+3.0,Superior Frontal Gyrus,Sst,0.0916951277599193,0.0,True
+4.0,Middle Frontal Gyrus,Sst,0.0050626978653827,0.0,True
+5.0,"Inferior Frontal Gyrus, pars triangularis",Sst,0.0782192118273072,0.0,True
+6.0,"Inferior Frontal Gyrus, pars opercularis",Sst,0.0538054698940266,0.0,True
+8.0,Temporal Pole,Sst,0.2369845827168281,0.0,True
+9.0,"Superior Temporal Gyrus, anterior division",Sst,0.1935712889395151,0.0,True
+10.0,"Superior Temporal Gyrus, posterior division",Sst,0.0137040831976146,0.019,True
+11.0,"Middle Temporal Gyrus, anterior division",Sst,0.1295733556880192,0.0,True
+12.0,"Middle Temporal Gyrus, posterior division",Sst,0.0520682389997333,0.0,True
+14.0,"Inferior Temporal Gyrus, anterior division",Sst,0.2082979075760568,0.0,True
+15.0,"Inferior Temporal Gyrus, posterior division",Sst,0.1166464453823637,0.0,True
+19.0,"Supramarginal Gyrus, anterior division",Sst,0.0113388034462878,0.0,True
+25.0,Frontal Medial Cortex,Sst,0.3948706429572798,0.0,True
+26.0,Juxtapositional Lobule Cortex (formerly Supplementary Motor Cortex),Sst,0.0757469056129807,0.0,True
+27.0,Subcallosal Cortex,Sst,0.3698234578306018,0.0,True
+28.0,Paracingulate Gyrus,Sst,0.3338890065904518,0.0,True
+29.0,"Cingulate Gyrus, anterior division",Sst,0.3915507376867655,0.0,True
+33.0,Frontal Orbital Cortex,Sst,0.2257664601233311,0.0,True
+34.0,"Parahippocampal Gyrus, anterior division",Sst,0.2985570969606841,0.0,True
+35.0,"Parahippocampal Gyrus, posterior division",Sst,0.0519196465550636,0.0,True
+37.0,"Temporal Fusiform Cortex, anterior division",Sst,0.2615226285051619,0.0,True
+38.0,"Temporal Fusiform Cortex, posterior division",Sst,0.0684179893901541,0.0,True
+41.0,Frontal Opercular Cortex,Sst,0.3687595326602281,0.0,True
+42.0,Central Opercular Cortex,Sst,0.1835876432571817,0.0,True
+43.0,Parietal Opercular Cortex,Sst,0.0725845829292172,0.0,True
+44.0,Planum Polare,Sst,0.2190617913434983,0.0,True
+1.0,Frontal Pole,Vip,0.0893021848720504,0.0,True
+10.0,"Superior Temporal Gyrus, posterior division",Vip,0.0286272923536672,0.0,True
+12.0,"Middle Temporal Gyrus, posterior division",Vip,0.0185700481490595,0.0,True
+13.0,"Middle Temporal Gyrus, temporooccipital part",Vip,0.0148870662382751,0.0,True
+15.0,"Inferior Temporal Gyrus, posterior division",Vip,0.01337061459395,0.0,True
+16.0,"Inferior Temporal Gyrus, temporooccipital part",Vip,0.0205010300177487,0.0,True
+18.0,Superior Parietal Lobule,Vip,0.0087479305723607,0.0,True
+21.0,Angular Gyrus,Vip,0.0046275672533319,0.0,True
+22.0,"Lateral Occipital Cortex, superior division",Vip,0.0301300807406743,0.0,True
+25.0,Frontal Medial Cortex,Vip,0.1809839417434237,0.0,True
+27.0,Subcallosal Cortex,Vip,0.1774334337606941,0.0,True
+28.0,Paracingulate Gyrus,Vip,0.0362107403079511,0.0,True
+29.0,"Cingulate Gyrus, anterior division",Vip,0.0148163498872823,0.0,True
+30.0,"Cingulate Gyrus, posterior division",Vip,0.2531754309346821,0.0,True
+31.0,Precuneous Cortex,Vip,0.0839592264640256,0.0,True
+33.0,Frontal Orbital Cortex,Vip,0.1241823980021174,0.0,True
+34.0,"Parahippocampal Gyrus, anterior division",Vip,0.0227674289260008,0.0,True
+35.0,"Parahippocampal Gyrus, posterior division",Vip,0.0750322341365704,0.0,True
+37.0,"Temporal Fusiform Cortex, anterior division",Vip,0.0084765628647735,0.0,True
+38.0,"Temporal Fusiform Cortex, posterior division",Vip,0.0347783224230746,0.0,True
+39.0,Temporal Occipital Fusiform Cortex,Vip,0.0013942722011203,0.016,True
+44.0,Planum Polare,Vip,0.1049917682287843,0.0,True
+45.0,Heschl's Gyrus (includes H1 and H2),Vip,0.1327341587814826,0.0,True
+46.0,Planum Temporale,Vip,0.1316333497760585,0.0,True
