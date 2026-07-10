@@ -9,16 +9,13 @@ from concurrent.futures import ThreadPoolExecutor
 from numba import njit
 
 def load_data(fc_file, ct_file):
-    # Load binarized FC matrix
     fc_df = pd.read_csv(fc_file, index_col=0)
     fc_matrix = fc_df.values
-    
-    # Ensure symmetry
+
     fc_matrix = np.nan_to_num(fc_matrix, 0)
     fc_matrix = np.maximum(fc_matrix, fc_matrix.T)
-    np.fill_diagonal(fc_matrix, 0) # No self loops
-    
-    # Load cell types
+    np.fill_diagonal(fc_matrix, 0)
+
     ct_df = pd.read_csv(ct_file)
     cols_to_drop = [c for c in ct_df.columns if c.lower() in ['region', 'numdonorsineachparcel', 'maxdonorpresenceinparcel']]
     ct_data = ct_df.drop(columns=cols_to_drop)
@@ -31,12 +28,10 @@ def calculate_coexpression_fast(fc_matrix, X, V):
     X: (N, C) array of cell type expression (NaNs replaced with 0)
     V: (N, C) binary array indicating valid (non-NaN) entries
     """
-    # (fc_matrix @ X) * X computes the sum of X_i * X_j for all edges
     numerator = np.sum((fc_matrix @ X) * X, axis=0) / 2.0
     # (fc_matrix @ V) * V computes the number of valid edges
     denominator = np.sum((fc_matrix @ V) * V, axis=0) / 2.0
-    
-    # Avoid division by zero
+
     with np.errstate(divide='ignore', invalid='ignore'):
         scores = np.where(denominator > 0, numerator / denominator, np.nan)
     return scores
@@ -45,8 +40,7 @@ def calculate_coexpression_fast(fc_matrix, X, V):
 def fast_double_edge_swap(fc_matrix, nswap_multiplier=5):
     """Generates a degree-preserving random network using an optimized algorithm."""
     fc_rand = fc_matrix.copy()
-    
-    # Get upper triangle edges
+
     n = fc_rand.shape[0]
     m = 0
     for i in range(n):
@@ -109,12 +103,10 @@ def fast_double_edge_swap(fc_matrix, nswap_multiplier=5):
 
 def process_single_file(fc_file, n_permutations=1000):
     try:
-        # Extract resolution from file path
         match = re.search(r'schaefer(\d+)-yeo7', fc_file)
         if not match:
             return None
         res = match.group(1)
-        # Cell-type CSVs are resolved relative to the repository root (run this script from there).
         script_dir = os.path.dirname(os.path.abspath(__file__))
         ct_file = os.path.join(script_dir, "cell_type_csv", f"cell_types_{res}_7net.csv")
         
@@ -123,32 +115,26 @@ def process_single_file(fc_file, n_permutations=1000):
             
         out_file = fc_file.replace('.csv', '_celltype_enrichment.csv')
         if os.path.exists(out_file):
-            return None # Skip if already processed
+            return None
             
         fc_matrix, ct_data = load_data(fc_file, ct_file)
         if np.sum(fc_matrix) == 0:
             return None
-            
-        # Prepare matrices for fast coexpression calculation
+
         X_df = ct_data.copy()
         V_df = (~X_df.isna()).astype(float)
         X_df = X_df.fillna(0)
         
         X = X_df.values
         V = V_df.values
-        
-        # Calculate real scores
+
         real_scores = calculate_coexpression_fast(fc_matrix, X, V)
-        
-        # Pre-compile the njit function by running it once on a small dummy array if it's the first run
-        # Numba will compile it on the first call
+
         null_scores = np.zeros((n_permutations, ct_data.shape[1]))
-        
-        # Initial long randomization
+
         current_rand = fast_double_edge_swap(fc_matrix, nswap_multiplier=5)
         null_scores[0, :] = calculate_coexpression_fast(current_rand, X, V)
-        
-        # Subsequent permutations only need 1x swaps to maintain MCMC chain
+
         for i in range(1, n_permutations):
             current_rand = fast_double_edge_swap(current_rand, nswap_multiplier=1)
             null_scores[i, :] = calculate_coexpression_fast(current_rand, X, V)
@@ -188,14 +174,10 @@ def main():
     args = parser.parse_args()
     
     files = glob.glob(args.pattern, recursive=True)
-    # Exclude this script's own previously-generated output files: their names also
-    # contain "_binarized_" as a substring, so they would otherwise be re-matched as
-    # if they were fresh FC inputs (and fail, since they aren't adjacency matrices).
     files = [f for f in files if not f.endswith('_celltype_enrichment.csv')]
     print(f"Found {len(files)} binarized FC files to process.")
     
     if args.force:
-        # Delete existing outputs to force re-run
         existing_outputs = glob.glob(args.pattern.replace('.csv', '_celltype_enrichment.csv'), recursive=True)
         for f in existing_outputs:
             try:
@@ -213,7 +195,6 @@ def main():
     print(f"Finished processing {processed} files.")
 
 if __name__ == "__main__":
-    # Force numba compilation on a small dummy array
     dummy = np.array([[0, 1], [1, 0]])
     _ = fast_double_edge_swap(dummy, 1)
     
