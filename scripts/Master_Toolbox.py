@@ -25,9 +25,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from numba import njit
 from statsmodels.stats.multitest import fdrcorrection
 
-# =============================================================================
 # IMPORT FC ENRICHMENT FUNCTIONS FROM BULK ANALYSIS SCRIPT
-# =============================================================================
 import sys as _sys
 
 import os
@@ -47,9 +45,7 @@ except Exception as _e:
     _FC_ENRICH_AVAILABLE = False
     _FC_ENRICH_ERROR = str(_e)
 
-# =============================================================================
 # IMPORT SPIN TEST FUNCTION (same scripts/ directory)
-# =============================================================================
 _spin_dir = os.path.dirname(os.path.abspath(__file__))
 if _spin_dir not in _sys.path:
     _sys.path.insert(0, _spin_dir)
@@ -60,10 +56,6 @@ except Exception as _se:
     _SPIN_AVAILABLE = False
     _SPIN_ERROR = str(_se)
 
-# =============================================================================
-# MODULE-LEVEL HELPERS: SCHAEFER COORDINATES AND YEO-7 NETWORK COLOURS
-# (shared by NetworkViewerWidget and FCEnrichmentViewerWidget)
-# =============================================================================
 def get_schaefer_coords(resolution):
     """Load Schaefer centroid RAS coordinates and ROI names.
     Downloads from ThomasYeoLab/CBIG GitHub if not cached locally.
@@ -117,9 +109,6 @@ def get_node_colors(roi_names):
             colors.append('black')
     return colors
 
-# =============================================================================
-# WORKER THREAD FOR REGIONAL CELL TYPE ANALYSIS
-# =============================================================================
 class AnalysisWorker(QThread):
     progress = pyqtSignal(int)
     log = pyqtSignal(str)
@@ -220,10 +209,6 @@ class AnalysisWorker(QThread):
             self.log.emit(f"Found {len(unique_clusters)} unique cluster(s): {unique_clusters[:5]}...")
             self.progress.emit(10)
 
-            # ── Pre-build KDTree for 3D Euclidean sphere permutations (NIfTI only) ──
-            # Built ONCE here, outside both the cell-type loop and the cluster loop,
-            # so it is NOT rebuilt 768× (16 cell types × 48 clusters).
-            # The tree depends only on valid_perm_indices which is fixed above.
             _sphere_tree = None
             _sphere_coords = None
             if not self.is_cifti:
@@ -299,62 +284,35 @@ class AnalysisWorker(QThread):
                     
                     # ── Random Permutation (memory-safe, vectorized where possible) ──
                     if self.perm_method in ("Random", "Random (Default)"):
-                        # Two-tier approach depending on universe size:
-                        #
-                        # SMALL universe (parcellation, < 256 MB threshold):
-                        #   Fully vectorized — (n_perms × universe_len) random-float matrix
-                        #   + argpartition to pick cluster_size indices per row.
-                        #   argpartition is O(n) per row — faster than argsort O(n log n).
-                        #
-                        # LARGE universe (NIfTI 2mm brain ~ 200K voxels):
-                        #   (1000 × 200K) float64 = 1.6 GB → crashes the GUI.
-                        #   Use rng.choice loop instead: C-level partial Fisher-Yates,
-                        #   ~0.1 ms per call → 1,000 perms done in < 0.2 s total.
-                        #   Memory: only (n_perms × cluster_size) = ~8 MB.
-                        #
-                        # Either way, Random is FASTER than Contiguous (no KD-tree build).
-                        matrix_bytes = self.n_permutations * universe_len * 8  # float64
-                        if matrix_bytes < 256 * 1024 * 1024:  # safe to fully vectorize
+
+                        matrix_bytes = self.n_permutations * universe_len * 8  
+                        if matrix_bytes < 256 * 1024 * 1024: 
                             rand_mat = np.random.rand(self.n_permutations, universe_len)
                             rand_indices = np.argpartition(rand_mat, cluster_size, axis=1)[:, :cluster_size]
                             perm_means = np.mean(perm_universe_exp[rand_indices], axis=1)
                         else:
-                            # Memory-safe: loop with fast C-level rng.choice
                             rng = np.random.default_rng()
                             rand_mat = np.empty((self.n_permutations, cluster_size), dtype=np.int64)
                             for i in range(self.n_permutations):
                                 rand_mat[i] = rng.choice(universe_len, size=cluster_size, replace=False)
                             perm_means = np.mean(perm_universe_exp[rand_mat], axis=1)
                     else:
-                        # Contiguous block logic
                         is_contiguous = self.perm_method in (
                             "Contiguous Block (partial spatial control)",
                             "Nearby Spatial (Contiguous)"
                         )
                         
                         if is_contiguous and not self.is_cifti:
-                            # ── BAT 1.0 EUCLIDEAN SPHERE METHOD ──
-                            # _sphere_tree and _sphere_coords were built ONCE before
-                            # the outer loops — no rebuild cost here per cluster/cell.
-
-                            # Pick random starting voxels for all permutations
                             start_indices = np.random.randint(0, universe_len, size=self.n_permutations)
                             start_coords = _sphere_coords[start_indices]
-                            
-                            # Find the closest 'cluster_size' voxels in 3D space
-                            # We use workers=-1 to utilize all CPU cores
                             k_neighbors = min(cluster_size, len(_sphere_coords))
                             _, nearest_indices = _sphere_tree.query(start_coords, k=k_neighbors, workers=-1)
                             
                             if k_neighbors == 1:
                                 nearest_indices = np.expand_dims(nearest_indices, axis=1)
-                                
-                            # Vectorized mean calculation
                             perm_means = np.mean(perm_universe_exp[nearest_indices], axis=1)
                             
                         else:
-                            # 1D array slicing for CIFTI (surface data lacks simple 3D coordinates here)
-                            # or fallback for random choice
                             for i in range(self.n_permutations):
                                 if is_contiguous:
                                     start_idx = np.random.randint(0, universe_len)
@@ -362,13 +320,11 @@ class AnalysisWorker(QThread):
                                     if end_idx <= universe_len:
                                         perm_indices = np.arange(start_idx, end_idx)
                                     else:
-                                        # Wrap around
                                         perm_indices = np.concatenate([
                                             np.arange(start_idx, universe_len),
                                             np.arange(0, end_idx - universe_len)
                                         ])
                                 else:
-                                    # Fallback (should not hit this based on UI choices)
                                     perm_indices = np.random.choice(universe_len, size=cluster_size, replace=False)
                                     
                                 perm_means[i] = np.mean(perm_universe_exp[perm_indices])
@@ -379,7 +335,6 @@ class AnalysisWorker(QThread):
 
                     p_val = np.sum(perm_diffs >= actual_diff) / self.n_permutations
 
-                    # Format p-value to avoid showing 0.0
                     p_val_display = "< 0.001" if p_val == 0.0 else f"{p_val:.4f}"
 
                     results.append({
@@ -395,10 +350,6 @@ class AnalysisWorker(QThread):
                 self.progress.emit(progress_val)
                 
             df_results = pd.DataFrame(results)
-
-            # Benjamini-Hochberg FDR correction across all tests in this run.
-            # Guards against the 18-cell-type family-wise inflation that unfiltered
-            # p<0.05 would produce when every cell type is tested against the same cluster.
             if self.apply_fdr and 'P_Value_Raw' in df_results.columns and len(df_results) > 0:
                 try:
                     from statsmodels.stats.multitest import fdrcorrection
@@ -422,9 +373,8 @@ class AnalysisWorker(QThread):
         except Exception as e:
             self.error.emit(str(e))
 
-# =============================================================================
+
 # TAB 1: CELL TYPE TOOLBOX WIDGET
-# =============================================================================
 class CellTypeWidget(QWidget):
     def __init__(self, parent_window=None):
         super().__init__()
@@ -774,8 +724,7 @@ class CellTypeWidget(QWidget):
             self.table.setItem(i, 0, QTableWidgetItem(str(row['Cluster_ID'])))
             self.table.setItem(i, 1, QTableWidgetItem(str(row['Cell_Type'])))
             self.table.setItem(i, 2, QTableWidgetItem(f"{row['Mean_Expression']:.4f}"))
-
-            # P_Value is now already formatted as string
+          
             self.table.setItem(i, 3, QTableWidgetItem(str(row['P_Value'])))
 
             sig_item = QTableWidgetItem(str(row['Significant (p<0.05)']))
@@ -854,9 +803,7 @@ class CellTypeWidget(QWidget):
         self.worker.error.connect(self.handle_error)
         self.worker.start()
 
-# =============================================================================
 # TAB 2: INTERACTIVE BRAIN VIEWER WIDGET
-# =============================================================================
 class InteractiveViewerWidget(QWidget):
     def __init__(self, parent_window=None):
         super().__init__()
@@ -878,7 +825,6 @@ class InteractiveViewerWidget(QWidget):
         try:
             if os.path.exists(self.csv_path):
                 self.df = pd.read_csv(self.csv_path)
-                # Check if this is a custom file (which might lack Anatomical_Region)
                 if 'Anatomical_Region' not in self.df.columns:
                     self.df['Anatomical_Region'] = "Cluster " + self.df['Cluster_ID'].astype(str)
                 
@@ -887,7 +833,6 @@ class InteractiveViewerWidget(QWidget):
                     if col in self.df.columns and self.df[col].dtype == object:
                         self.df[col] = self.df[col].astype(str).str.lower() == 'true'
                 
-                # Try to use FDR if available, otherwise fallback to Raw P-Value
                 if 'Significant_FDR (q<0.05)' in self.df.columns and self.df['Significant_FDR (q<0.05)'].any():
                     self.df = self.df[self.df['Significant_FDR (q<0.05)'] == True]
                 elif 'Significant_FDR' in self.df.columns and self.df['Significant_FDR'].any():
@@ -911,8 +856,6 @@ class InteractiveViewerWidget(QWidget):
         if file_name:
             self.csv_path = file_name
             self.load_data()
-            
-            # Clear the old 3D viewer when loading a new file
             if hasattr(self, 'web_view'):
                 self.web_view.setHtml("<html><body style='background-color:black;'><h2 style='color:white; text-align:center; margin-top:20%; font-family:Arial;'>Load a cell type to view 3D brain map</h2></body></html>")
             
@@ -1023,11 +966,9 @@ class InteractiveViewerWidget(QWidget):
     def plot_specific_region(self, item):
         if self.df is None or self.atlas_img is None: return
         cluster_id = item.data(Qt.UserRole)
-        # Extract just the region name by removing the "[Direction] " prefix and " (Z:" suffix
         full_text = item.text()
         region_name = full_text.split("] ")[1].split(" (Z:")[0]
-        
-        # If the region name is very long (like some Harvard-Oxford names), truncate it with an ellipsis
+
         if len(region_name) > 25:
             display_name = region_name[:22] + "..."
         else:
@@ -1047,8 +988,6 @@ class InteractiveViewerWidget(QWidget):
         
         vmax = df_cell['Mean_Expression'].max()
         vmin = df_cell['Mean_Expression'].min()
-        
-        # Determine appropriate colormap based on whether it's over or under expressed
         cmap = 'Reds' if z_score > 0 else 'Blues'
         
         html_view = plotting.view_img(
@@ -1106,16 +1045,13 @@ class InteractiveViewerWidget(QWidget):
         html_view.save_as_html(temp_html)
         self.web_view.load(QUrl.fromLocalFile(temp_html))
 
-# =============================================================================
 # TAB 3: 3D NETWORK VIEWER WIDGET (FC)
-# =============================================================================
 class NetworkViewerWidget(QWidget):
     def __init__(self, parent_window=None):
         super().__init__()
         self.parent_window = parent_window
         self.base_dir = f"{BASE_DIR}/Functional_connectivity"
         self.diseases = []
-        # Exclude 200 resolution from the dropdown list
         self.resolutions = [str(r) for r in range(100, 1001, 100) if r != 200]
         self.init_data()
         self.initUI()
@@ -1130,11 +1066,9 @@ class NetworkViewerWidget(QWidget):
         self.diseases = sorted(list(dis_set))
 
     def get_schaefer_coords(self, resolution):
-        # Delegates to module-level function (shared with FCEnrichmentViewerWidget)
         return get_schaefer_coords(resolution)
 
     def get_node_colors(self, roi_names):
-        # Delegates to module-level function (shared with FCEnrichmentViewerWidget)
         return get_node_colors(roi_names)
 
     def initUI(self):
@@ -1191,7 +1125,6 @@ class NetworkViewerWidget(QWidget):
         ct_layout.addWidget(QLabel("Cell Type:"))
         ct_layout.addWidget(self.combo_ct)
         
-        # Connect combo_ct so it auto-updates the 3D network when the user selects a new cell type
         self.combo_ct.currentIndexChanged.connect(self.on_cell_type_changed)
         
         ct_group.setLayout(ct_layout)
@@ -1205,7 +1138,7 @@ class NetworkViewerWidget(QWidget):
         right_panel.addWidget(self.web_view)
         
         self.web_view_overlay = QWebEngineView()
-        self.web_view_overlay.hide() # Hidden by default until overlay is checked
+        self.web_view_overlay.hide() 
         right_panel.addWidget(self.web_view_overlay)
         
         main_layout.addWidget(left_panel)
@@ -1259,7 +1192,6 @@ class NetworkViewerWidget(QWidget):
                 
             self.combo_ct.blockSignals(False)
             
-            # Auto-plot when overlay is toggled on and valid data exists
             if self.cell_type_data is not None and self.combo_ct.count() > 0:
                 self.plot_network()
         else:
@@ -1269,7 +1201,6 @@ class NetworkViewerWidget(QWidget):
             self.cell_type_data = None
             self.combo_ct.blockSignals(False)
             
-            # Re-plot without overlay
             self.plot_network()
 
     def on_cell_type_changed(self, index):
@@ -1327,7 +1258,6 @@ class NetworkViewerWidget(QWidget):
         edge_cmap = 'Reds' if direction == 'pos' else ('Blues' if direction == 'neg' else 'Purples')
         title = f"{dis.upper()} (Res {res}) | Edges: {edge_count}"
         
-        # Plot 1: Standard Network without Cell Type Overlay
         html_view_standard = plotting.view_connectome(
             matrix, 
             coords, 
@@ -1343,18 +1273,14 @@ class NetworkViewerWidget(QWidget):
         html_view_standard.save_as_html(temp_html_std)
         self.web_view.load(QUrl.fromLocalFile(temp_html_std))
         
-        # Plot 2: Cell Type Overlay (if enabled)
         if self.chk_overlay.isChecked() and self.cell_type_data is not None:
             sel_ct = self.combo_ct.currentText()
             if sel_ct in self.cell_type_data.columns:
-                # Normalize cell type expression for node sizes (min size 2, max size 15)
                 expr = self.cell_type_data[sel_ct].values
                 if len(expr) == len(coords):
                     norm_expr = (expr - expr.min()) / (expr.max() - expr.min() + 1e-8)
                     node_sizes_overlay = 2 + (norm_expr * 13)
-                    
-                    # Create color map for node colors based on expression (Darker = Higher Expression)
-                    # We use 'Purples' for positive and 'Greens' for negative so nodes stand out clearly against Red/Blue edges
+
                     import matplotlib.cm as cm
                     if direction == 'pos':
                         node_cmap = cm.get_cmap('Purples')
@@ -1363,7 +1289,6 @@ class NetworkViewerWidget(QWidget):
                     else:
                         node_cmap = cm.get_cmap('Oranges')
                     
-                    # Scale colors from 0.3 to 1.0 so they don't get too light/invisible
                     node_colors_overlay = [mcolors.to_hex(node_cmap(0.3 + (0.7 * val))) for val in norm_expr]
                     
                     title_overlay = f"{dis.upper()} (Res {res}) | {sel_ct} Overlay | Larger/Darker = Higher"
@@ -1389,9 +1314,8 @@ class NetworkViewerWidget(QWidget):
                 html_view_overlay.save_as_html(temp_html_overlay)
                 self.web_view_overlay.load(QUrl.fromLocalFile(temp_html_overlay))
 
-# =============================================================================
+
 # WORKER THREAD FOR CUSTOM FC ENRICHMENT ANALYSIS
-# =============================================================================
 class FCEnrichmentWorker(QThread):
     progress = pyqtSignal(int)
     log      = pyqtSignal(str)
@@ -1410,8 +1334,8 @@ class FCEnrichmentWorker(QThread):
         self.apply_threshold = apply_threshold
         self.threshold_method = threshold_method
         self.threshold_val  = threshold_val
-        self.fc_matrix      = None          # stored after load for widget to retrieve
-        self.ct_data        = None          # raw cell-type DataFrame (for spin test)
+        self.fc_matrix      = None    
+        self.ct_data        = None 
         self.resolved_direction = "pos"
 
     def run(self):
@@ -1464,7 +1388,6 @@ class FCEnrichmentWorker(QThread):
                 self.fc_indices = fc_indices
                 target_cluster_ids = []
                 
-                # FreeSurfer Desikan-Killiany mapping (aparc)
                 fs_map = {
                     'bankssts': 1, 'caudalanteriorcingulate': 2, 'caudalmiddlefrontal': 3,
                     'cuneus': 5, 'entorhinal': 6, 'fusiform': 7, 'inferiorparietal': 8,
@@ -1479,7 +1402,6 @@ class FCEnrichmentWorker(QThread):
                     'temporalpole': 33, 'transversetemporal': 34, 'insula': 35
                 }
                 
-                # Check if we can map FreeSurfer labels
                 is_freesurfer = any('ctx-' in idx.lower() or 'lh-' in idx.lower() or 'rh-' in idx.lower() for idx in fc_indices)
                 
                 if is_freesurfer:
@@ -1496,10 +1418,7 @@ class FCEnrichmentWorker(QThread):
                         if matched_id is not None:
                             target_cluster_ids.append(matched_id)
                         else:
-                            # Fallback if not found
                             target_cluster_ids.append(-1)
-                            
-                    # Safety fallback: If ALL mapped FreeSurfer IDs are missing, maybe the NIfTI is simply numbered 1 to N
                     valid_targets = [cid for cid in target_cluster_ids if cid != -1]
                     missing_targets = [cid for cid in valid_targets if cid not in unique_clusters]
                     if valid_targets and len(missing_targets) == len(valid_targets):
@@ -1510,18 +1429,14 @@ class FCEnrichmentWorker(QThread):
                             self.error.emit(f"Custom parcellation has {len(unique_clusters)} regions, but FC matrix has {expected_n} regions. Standard FreeSurfer IDs were not found. They must match exactly.")
                             return
                 else:
-                    # Try to parse indices as integers
                     try:
                         target_cluster_ids = [int(idx) for idx in fc_indices]
                     except ValueError:
-                        # If they are just arbitrary strings, fallback to 1-to-1 mapping if sizes match
                         if len(unique_clusters) == expected_n:
                             target_cluster_ids = unique_clusters.tolist()
                         else:
                             self.error.emit(f"Custom parcellation has {len(unique_clusters)} regions, but FC matrix has {expected_n} regions. Row names do not match FreeSurfer or integer IDs. They must match exactly.")
                             return
-                
-                # Verify we found the clusters
                 missing_clusters = [cid for cid in target_cluster_ids if cid not in unique_clusters and cid != -1]
                 if missing_clusters:
                     self.log.emit(f"Warning: Some mapped clusters (e.g. {missing_clusters[:5]}) are missing in the NIfTI.")
@@ -1548,8 +1463,6 @@ class FCEnrichmentWorker(QThread):
                     try:
                         ct_img = nib.load(ct_path)
                         ct_img_data = ct_img.get_fdata()
-                        
-                        # Resample if shapes don't match
                         if ct_img_data.shape != parc_data_3d.shape:
                             if ct_img_data.size == parc_data_3d.size:
                                 ct_img_data = ct_img_data.reshape(parc_data_3d.shape)
@@ -1611,10 +1524,8 @@ class FCEnrichmentWorker(QThread):
                 )
                 return
 
-            self.fc_matrix = fc_matrix   # make available to widget after run
-            self.ct_data   = ct_data     # raw cell-type DataFrame for spin test
-
-        # ── Apply Matrix Thresholding ──────────────────────────────────────
+            self.fc_matrix = fc_matrix
+            self.ct_data   = ct_data
         if self.apply_threshold:
             self.log.emit(f"Thresholding matrix: {self.threshold_method} ({self.threshold_val}%)...")
             # Flatten upper triangle
@@ -1623,8 +1534,6 @@ class FCEnrichmentWorker(QThread):
             n_possible_edges = len(edge_vals)
             
             n_keep = max(1, int(np.round((self.threshold_val / 100.0) * n_possible_edges)))
-            
-            # Decide which values to sort/threshold
             if "Positive" in self.threshold_method:
                 vals_to_sort = edge_vals
             elif "Negative" in self.threshold_method:
@@ -1634,11 +1543,10 @@ class FCEnrichmentWorker(QThread):
             else:
                 vals_to_sort = edge_vals
                 
-            # Find threshold cutoff
             if n_keep >= n_possible_edges:
-                cutoff = -np.inf # Keep all
+                cutoff = -np.inf 
             else:
-                sorted_vals = np.sort(vals_to_sort)[::-1] # Descending
+                sorted_vals = np.sort(vals_to_sort)[::-1] 
                 cutoff = sorted_vals[n_keep - 1]
                 
             # Apply threshold
@@ -1647,12 +1555,11 @@ class FCEnrichmentWorker(QThread):
             # Create new binarized matrix
             new_fc = np.zeros_like(self.fc_matrix)
             new_fc[upper_tri_indices[0][mask], upper_tri_indices[1][mask]] = 1
-            new_fc = np.maximum(new_fc, new_fc.T) # make symmetric
+            new_fc = np.maximum(new_fc, new_fc.T) 
             self.fc_matrix = new_fc
-            fc_matrix = self.fc_matrix # Update local reference used by analysis below
+            fc_matrix = self.fc_matrix 
             self.log.emit(f"Matrix thresholded. Retained {int(np.sum(fc_matrix)/2)} edges.")
         else:
-            # Check if the matrix is actually binary (only 0s and 1s)
             unique_vals = np.unique(self.fc_matrix)
             is_binary = np.all(np.isin(unique_vals, [0, 1]))
             if not is_binary:
@@ -1663,19 +1570,12 @@ class FCEnrichmentWorker(QThread):
                     "Please check the 'Apply Thresholding' box and try again."
                 )
                 return
-
-        # ── Prepare expression matrices ───────────────────────────────────
         V = (~ct_data.isna()).astype(float).values
         X = ct_data.fillna(0.0).values
         cell_types = ct_data.columns.tolist()
-
-        # ── Real co-expression scores ─────────────────────────────────────
         self.log.emit("Computing real co-expression scores...")
         self.progress.emit(5)
         real_scores = calculate_coexpression_fast(fc_matrix, X, V)
-
-        # ── Permutation null ──────────────────────────────────────────────
-        # Set random seed to ensure reproducible results across identical runs
         np.random.seed(42)
         
         n_ct = X.shape[1]
@@ -1713,18 +1613,14 @@ class FCEnrichmentWorker(QThread):
                     
                 df_coords = pd.read_csv(coord_file)
                 coords = df_coords[['R', 'A', 'S']].values
-                # We need a hemisphere mask. The Schaefer ROI Name typically contains 'LH' or 'RH'.
                 roi_names = df_coords['ROI Name'].astype(str).values
                 hemi_mask = np.array(['_LH_' in name for name in roi_names])
                 
-                # Use the imported spin test generator
-                # The spin test expects coords, hemi_mask, n_spins
                 spin_perms = generate_spin_permutations(coords, hemi_mask, self.n_perms)
                 
                 report_every = max(1, self.n_perms // 20)
                 for i in range(self.n_perms):
                     perm_idx = spin_perms[i]
-                    # Spin the cell type expression map
                     X_spun = X[perm_idx]
                     V_spun = V[perm_idx]
                     null_scores[i] = calculate_coexpression_fast(fc_matrix, X_spun, V_spun)
@@ -1746,7 +1642,6 @@ class FCEnrichmentWorker(QThread):
             report_every = max(1, self.n_perms // 20)
             for i in range(self.n_perms):
                 rand_mat = np.zeros_like(fc_matrix)
-                # Randomly pick n_edges from upper triangle
                 upper_indices = np.triu_indices(N, 1)
                 idx_choices = np.random.choice(len(upper_indices[0]), size=n_edges, replace=False)
                 rand_mat[upper_indices[0][idx_choices], upper_indices[1][idx_choices]] = 1
@@ -1759,7 +1654,6 @@ class FCEnrichmentWorker(QThread):
                     self.log.emit(f"Random Permutation {i}/{self.n_perms}...")
 
         else:
-            # Default: Topological Edge-Swap
             self.log.emit("Compiling JIT kernel (first run may take ~10 s)...")
             self.progress.emit(8)
             current_rand = fast_double_edge_swap(fc_matrix, nswap_multiplier=5)
@@ -1774,7 +1668,6 @@ class FCEnrichmentWorker(QThread):
                     self.progress.emit(pct)
                     self.log.emit(f"Edge-Swap Permutation {i}/{self.n_perms}...")
 
-        # ── P-values ──────────────────────────────────────────────────────
         fdr_label = "p-values + BH-FDR" if self.apply_fdr else "p-values (no FDR)"
         self.log.emit(f"Computing {fdr_label}...")
         self.progress.emit(94)
@@ -1794,8 +1687,6 @@ class FCEnrichmentWorker(QThread):
                 null_stds.append(float(np.std(valid)))
 
         p_arr = np.array(p_values)
-
-        # ── Optional BH-FDR correction ────────────────────────────────────
         fdr_q   = np.full(n_ct, np.nan)
         sig_fdr = np.zeros(n_ct, dtype=bool)
         if self.apply_fdr:
@@ -1803,7 +1694,6 @@ class FCEnrichmentWorker(QThread):
             if valid_m.sum() > 0:
                 _, fdr_q[valid_m] = fdrcorrection(p_arr[valid_m], alpha=0.05)
             sig_fdr = (~np.isnan(fdr_q)) & (fdr_q < 0.05)
-        # When FDR is off, mark significance by raw p < 0.05 instead
         sig_raw = (~np.isnan(p_arr)) & (p_arr < 0.05)
 
         def _fmt(v):
@@ -1819,8 +1709,8 @@ class FCEnrichmentWorker(QThread):
             "P_Value_Display": [_fmt(v) for v in p_arr],
             "FDR_q":           fdr_q,
             "FDR_Display":     [_fmt(v) for v in fdr_q],
-            "Significant_FDR": sig_fdr,   # FDR q < 0.05 (all False when FDR disabled)
-            "Significant_Raw": sig_raw,   # raw p < 0.05 (always computed)
+            "Significant_FDR": sig_fdr,
+            "Significant_Raw": sig_raw,
             "FDR_Applied":     self.apply_fdr,
         })
 
@@ -1831,7 +1721,7 @@ class FCEnrichmentWorker(QThread):
         try:
             df.to_csv(out_csv, index=False)
         except Exception:
-            pass   # non-fatal
+            pass
 
         self.progress.emit(100)
         if self.apply_fdr:
@@ -1846,10 +1736,7 @@ class FCEnrichmentWorker(QThread):
             )
         self.finished.emit(df)
 
-
-# =============================================================================
-# CUSTOM FC ENRICHMENT & VIEWER WIDGET  (screen index 4)
-# =============================================================================
+# CUSTOM FC ENRICHMENT & VIEWER WIDGET
 class FCEnrichmentViewerWidget(QWidget):
     def __init__(self, parent_window=None):
         super().__init__()
@@ -1996,7 +1883,7 @@ class FCEnrichmentViewerWidget(QWidget):
 
         step2_lay.addLayout(form)
 
-        # FDR checkbox (optional)
+        # FDR checkbox
         self.chk_fdr = QCheckBox("Apply Benjamini-Hochberg FDR correction  (recommended)")
         self.chk_fdr.setChecked(True)
         self.chk_fdr.setStyleSheet("font-weight: normal; font-size: 10px;")
@@ -2076,7 +1963,6 @@ class FCEnrichmentViewerWidget(QWidget):
         left_layout.addStretch()
         main_layout.addWidget(left_panel)
 
-        # ── RIGHT PANEL ───────────────────────────────────────────────────
         right_splitter = QSplitter(Qt.Vertical)
 
         # Results table
@@ -2124,7 +2010,6 @@ class FCEnrichmentViewerWidget(QWidget):
         self.btn_custom_parc.setVisible(is_custom)
         self.lbl_custom_parc.setVisible(is_custom)
         
-        # If custom, Spin Test is not supported without coordinates
         if is_custom:
             for i in range(self.combo_perm.count()):
                 if "Spin Test" in self.combo_perm.itemText(i):
@@ -2161,7 +2046,6 @@ class FCEnrichmentViewerWidget(QWidget):
                                     f"Cell-type data not found for resolution {self.combo_res.currentText()}:\n{ct_file}")
                 return
 
-        # Kill any previous run
         if self.worker and self.worker.isRunning():
             self.worker.quit()
             self.worker.wait()
@@ -2172,7 +2056,6 @@ class FCEnrichmentViewerWidget(QWidget):
         self.progress_bar.setValue(0)
         self.lbl_log.setText("Starting analysis...")
 
-        # Map the display text back to the internal hint the worker expects
         dir_text = self.combo_dir.currentText()
         if "Positive" in dir_text:
             dir_hint = "Positive"
@@ -2206,7 +2089,6 @@ class FCEnrichmentViewerWidget(QWidget):
 
         fdr_applied = bool(df["FDR_Applied"].iloc[0]) if "FDR_Applied" in df.columns else True
 
-        # ── Update table column headers based on FDR mode ─────────────
         if fdr_applied:
             self.table.setHorizontalHeaderLabels(
                 ["Cell Type", "Real Score", "Null Mean", "p-value", "FDR q", "Significant (FDR)"]
@@ -2216,10 +2098,9 @@ class FCEnrichmentViewerWidget(QWidget):
                 ["Cell Type", "Real Score", "Null Mean", "p-value", "FDR q (N/A)", "Significant (p<0.05)"]
             )
 
-        # ── Populate table ─────────────────────────────────────────────
         self.table.setRowCount(len(df))
-        green_bg  = QBrush(QColor(200, 255, 200))   # FDR significant
-        yellow_bg = QBrush(QColor(255, 255, 180))   # raw p significant (when FDR off)
+        green_bg  = QBrush(QColor(200, 255, 200))
+        yellow_bg = QBrush(QColor(255, 255, 180))
 
         for row_i, row in df.iterrows():
             is_sig_fdr = bool(row["Significant_FDR"])
@@ -2244,10 +2125,6 @@ class FCEnrichmentViewerWidget(QWidget):
                     item.setBackground(bg)
                 self.table.setItem(row_i, col_i, item)
 
-        # ── Populate cell-type overlay dropdown ───────────────────────
-        # Mirror Tab 1 behaviour: only show cell types that pass the
-        # significance threshold (FDR q<0.05 when FDR is on, raw p<0.05
-        # when FDR is off).  Fall back to all cell types if none pass.
         sig_col  = "Significant_FDR" if fdr_applied else "Significant_Raw"
         sort_col = "FDR_q"           if fdr_applied else "P_Value"
 
@@ -2257,21 +2134,16 @@ class FCEnrichmentViewerWidget(QWidget):
         self.combo_ct.clear()
 
         if not sig_df.empty:
-            # Only significant cell types — same as Tab 1
             for _, row in sig_df.iterrows():
                 self.combo_ct.addItem(row["CellType"])
-            # All entries are significant, so bold them all
             for i in range(self.combo_ct.count()):
                 model_item = self.combo_ct.model().item(i)
                 if model_item:
                     model_item.setFont(QFont("Arial", 9, QFont.Bold))
         else:
-            # Fallback: no cell type reached significance — show all,
-            # sorted by p-value, so the user can still explore
             fallback = df.sort_values("P_Value")
             for _, row in fallback.iterrows():
                 self.combo_ct.addItem(row["CellType"])
-            # Add a placeholder at the top explaining the fallback
             self.combo_ct.insertItem(0, "— no significant cell types (showing all) —")
             self.combo_ct.setCurrentIndex(0)
 
@@ -2435,12 +2307,10 @@ class FCEnrichmentViewerWidget(QWidget):
         if coords is None or len(expr) != len(coords):
             return
 
-        # Normalise expression to node sizes 2–15
         e_min, e_max = expr.min(), expr.max()
         norm_expr = (expr - e_min) / (e_max - e_min + 1e-8)
         node_sizes = 2 + norm_expr * 13
 
-        # Node colours from expression intensity
         import matplotlib.cm as cm
         direction  = self.worker.resolved_direction
         node_cmap  = cm.get_cmap("Purples" if direction == "pos" else "Greens")
@@ -2465,9 +2335,7 @@ class FCEnrichmentViewerWidget(QWidget):
             pass
 
 
-# =============================================================================
 # MAIN MENU WIDGET
-# =============================================================================
 class MainMenuWidget(QWidget):
     def __init__(self, parent_window):
         super().__init__()
@@ -2528,9 +2396,7 @@ class MainMenuWidget(QWidget):
         layout.addLayout(btn_layout)
         layout.addStretch()
 
-# =============================================================================
 # MAIN MASTER WINDOW
-# =============================================================================
 class MasterToolbox(QMainWindow):
     def __init__(self):
         super().__init__()
