@@ -1,15 +1,4 @@
-"""
-Alexander-Bloch spin-test utilities for parcellated Schaefer data.
 
-Given parcel centroid coordinates in MNI space, generate N_spins permutation
-indices by rotating the centroids on a unit sphere (per hemisphere, with
-right-hemisphere rotation mirrored to preserve hemispheric symmetry) and
-matching each rotated centroid to its nearest original centroid.
-
-Reference:
-  Alexander-Bloch et al. (2018). On testing for spatial correspondence between
-  maps of human brain structure and function. NeuroImage, 178, 540-551.
-"""
 from __future__ import annotations
 import numpy as np
 import pandas as pd
@@ -86,8 +75,6 @@ def generate_spin_permutations(coords_ras: np.ndarray,
     rh_unit = rh_pts / np.linalg.norm(rh_pts, axis=1, keepdims=True)
 
     perms = np.empty((n_spins, N), dtype=np.int64)
-    # Reflection for right hemisphere so the rotation is mirrored (keeps
-    # left-right symmetry, standard in the Alexander-Bloch implementation).
     reflect = np.diag([-1.0, 1.0, 1.0])
 
     for s in range(n_spins):
@@ -97,9 +84,7 @@ def generate_spin_permutations(coords_ras: np.ndarray,
         lh_rot = lh_unit @ R_left.T
         rh_rot = rh_unit @ R_right.T
 
-        # Nearest-neighbour within each hemisphere
-        # distances = 1 - cos(theta) is monotonic in angular distance on unit sphere
-        lh_sim = lh_rot @ lh_unit.T           # cosine similarity
+        lh_sim = lh_rot @ lh_unit.T 
         rh_sim = rh_rot @ rh_unit.T
         lh_nn = lh_idx[np.argmax(lh_sim, axis=1)]
         rh_nn = rh_idx[np.argmax(rh_sim, axis=1)]
@@ -113,13 +98,11 @@ def generate_spin_permutations(coords_ras: np.ndarray,
 
 
 if __name__ == "__main__":
-    # Tiny smoke test
     p = rf"{BASE_DIR}/schaefer_coords/Schaefer2018_400Parcels_7Networks_order_FSLMNI152_1mm.Centroid_RAS.csv"
     names, coords, is_lh = load_schaefer_centroids(p)
     perms = generate_spin_permutations(coords, is_lh, n_spins=10, seed=0)
     print("Loaded", len(names), "parcels,", is_lh.sum(), "LH /", (~is_lh).sum(), "RH")
     print("Spin permutation shape:", perms.shape)
-    # Every permuted index should still be within the correct hemisphere
     lh_idx = np.where(is_lh)[0]
     rh_idx = np.where(~is_lh)[0]
     for s in range(perms.shape[0]):
