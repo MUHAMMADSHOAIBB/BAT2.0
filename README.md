@@ -1,8 +1,8 @@
-# BAT 2.0 — Brain Annotation Toolbox
+# BAT 2.0 Brain Annotation Toolbox
 
 BAT 2.0 is an open-source Python toolbox for single-cell-informed cell-type annotation of neuroimaging result maps. It integrates Allen Human Brain Atlas (AHBA) transcriptomic data, deconvolved with single-nucleus RNA-sequencing-derived cell-type signatures (CIBERSORTx), to generate abundance estimates for 16 neuronal and non-neuronal cell classes. BAT 2.0 accepts volumetric NIfTI maps, surface-based CIFTI maps, user-defined parcellated maps, and functional connectivity (FC) matrices, and evaluates each input against a null model matched to its statistical structure (a spatially coherent 3D Euclidean sphere null for cluster-level/volumetric maps, and a degree-preserving topological edge-swap null for FC matrices).
 
-This repository contains the source code and a small example dataset sufficient to run every module of the toolbox end-to-end. The complete reference and result data needed to reproduce every analysis reported in the manuscript (all parcellation resolutions, all 11 conditions) is archived separately on Zenodo, where it has a permanent, citable DOI — see [Data Availability](#data-availability) below.
+This repository contains the source code and a small example dataset sufficient to run every module of the toolbox end-to-end. The complete reference and result data needed to reproduce every analysis reported in the manuscript (all parcellation resolutions, all 11 conditions) is archived separately on Zenodo, where it has a permanent, citable DOI see [Data Availability](#data-availability) below.
 
 ## Repository Structure
 
@@ -17,7 +17,7 @@ This repository contains the source code and a small example dataset sufficient 
 | `cell_type_csv/` | Parcel-wise cell-type abundance tables (Schaefer-Yeo, 100–1,000 parcels), used by the FC enrichment pipeline. |
 | `cell_types/` | Surface (CIFTI) cell-type abundance maps, 100-parcel resolution. |
 | `cell_types_3D/` | Volumetric (NIfTI) cell-type abundance maps, one per cell class. |
-| `Functional_connectivity/` | Group-level FC matrices for all 11 neurological/psychiatric conditions at the 100-parcel Schaefer-Yeo resolution, plus the aparc-based depression dataset, including pre-computed `*_celltype_enrichment.csv` outputs for reference. This is a representative subset — every condition is included, at one resolution — so the toolbox and batch script can be exercised immediately without any external download. **The remaining resolutions (200–1,000 parcels) are included in the full Zenodo data archive**, not in this repository. |
+| `Functional_connectivity/` | Group-level FC matrices for all 11 neurological/psychiatric conditions at the 100-parcel Schaefer-Yeo resolution, plus the aparc-based depression dataset, including pre-computed `*_celltype_enrichment.csv` outputs for reference. This is a representative subset every condition is included, at one resolution — so the toolbox and batch script can be exercised immediately without any external download. **The remaining resolutions (200–1,000 parcels) are included in the full Zenodo data archive**, not in this repository. |
 | `requirements.txt` | Python package dependencies. |
 
 **Note on Connectome Workbench:** this repository previously bundled Windows binaries for Connectome Workbench (used internally for surface rendering). These have been removed to keep the repository lightweight. If you need them, download the appropriate build for your OS directly from the official Connectome Workbench site: https://www.humanconnectome.org/software/connectome-workbench.
@@ -88,7 +88,7 @@ python run_all_fc_celltype_enrichment.py --pattern "/path/to/your/data/**/*_bina
 
 ## Data Availability
 
-The full reference and result dataset backing the manuscript — all parcellation resolutions (100–1,000 parcels) for all 11 conditions, plus the reference atlases, cell-type maps, and example data also included here in miniature — is permanently archived on Zenodo:
+The full reference and result dataset backing the manuscript — all parcellation resolutions (100–1,000 parcels) for all 11 conditions, plus the reference atlases, cell-type maps, and example data also included here in miniature is permanently archived on Zenodo:
 
 **https://doi.org/10.5281/zenodo.20839415**
 
